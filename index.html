@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suryansh Kumar — Backend, AI Systems, Security</title>
+<meta name="description" content="B.Tech CSE at VIT Bhopal, 2027. Two DRDO traineeships building offline RAG and OSINT investigation systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14120E; --panel:#1C1914; --panel2:#221E18; --panel3:#2A251D;
+  --line:#322C23; --line2:#4A4235;
+  --ink:#F0EAD9; --ink2:#C4BCA8; --muted:#8A8271;
+  --accent:#E8763A; --accent2:#7FA88A; --wash:#2A2118;
+  --mono:'IBM Plex Mono',ui-monospace,'Cascadia Mono','Courier New',monospace;
+  --sans:'Instrument Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --gap:12px; --pad:clamp(20px,2.4vw,28px); --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg);-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink2);font-family:var(--sans);
+  font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;padding:var(--gap)}
+.shell{max-width:1240px;margin:0 auto}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.label{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted)}
+
+/* ---------- scroll progress ---------- */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:200;
+  transition:width .08s linear;box-shadow:0 0 12px rgba(232,118,58,.6)}
+
+/* ---------- grid + spotlight ---------- */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--gap);align-items:stretch}
+.cell{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:var(--pad);display:flex;flex-direction:column;position:relative;overflow:hidden;
+  transition:border-color .2s}
+.cell::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%),
+    rgba(232,118,58,.09),transparent 62%);
+}
+.cell:hover::before{opacity:1}
+.cell:hover{border-color:var(--line2)}
+.cell > *{position:relative}
+.c12{grid-column:span 12}.c7{grid-column:span 7}.c6{grid-column:span 6}.c5{grid-column:span 5}
+.cell-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  padding-bottom:13px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+
+/* ---------- topbar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:4px 6px 14px;flex-wrap:wrap}
+.brand{font-family:var(--mono);font-weight:600;font-size:14px;color:var(--ink);letter-spacing:.02em}
+.brand span{color:var(--accent)}
+.toplinks{display:flex;align-items:center;gap:18px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.toplinks a:hover{color:var(--ink)}
+.kbd{font-family:var(--mono);font-size:10px;border:1px solid var(--line2);border-radius:5px;
+  padding:3px 7px;color:var(--muted);background:var(--panel2);cursor:pointer;
+  transition:color .2s,border-color .2s}
+.kbd:hover{color:var(--accent);border-color:var(--accent)}
+
+.btn{display:inline-flex;align-items:center;gap:9px;border-radius:8px;padding:10px 16px;
+  font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid transparent;cursor:pointer;transition:transform .13s,box-shadow .2s,background .2s,border-color .2s,color .2s}
+.btn-primary{background:var(--accent);color:#1A0E06}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px -10px rgba(232,118,58,.75)}
+.btn-ghost{background:var(--panel2);color:var(--ink);border-color:var(--line2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.btn-sm{padding:8px 13px;font-size:11px}
+
+/* ---------- hero ---------- */
+.hero{justify-content:space-between;gap:26px;min-height:330px}
+h1{font-family:var(--mono);font-weight:600;color:var(--ink);
+  font-size:clamp(28px,3.9vw,46px);line-height:1.14;letter-spacing:-.028em;margin:16px 0 20px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(15px,1.4vw,16.5px);max-width:56ch}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+
+/* ---------- leetcode ---------- */
+.lc-num{font-family:var(--mono);font-weight:600;font-size:clamp(44px,5.6vw,64px);
+  line-height:1;color:var(--ink);letter-spacing:-.04em}
+.lc-unit{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:9px}
+.pill{display:inline-flex;align-items:center;gap:7px;background:var(--wash);color:var(--accent2);
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 10px;border-radius:99px;border:1px solid var(--line2);white-space:nowrap}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--accent2);display:block}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.35}}
+.pill i.on{animation:breathe 2.4s ease-in-out infinite}
+.split{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border-top:1px solid var(--line);
+  margin-top:20px;padding-top:16px}
+.split .v{font-family:var(--mono);font-weight:600;font-size:20px;color:var(--ink);line-height:1.2}
+.split .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-top:3px}
+.heat{display:flex;gap:3px;margin-top:auto;padding-top:22px}
+.heat-col{display:flex;flex-direction:column;gap:3px;flex:1}
+.heat i{aspect-ratio:1;border-radius:2px;background:var(--panel3);display:block}
+.heat i[data-l="1"]{background:#5A4632}.heat i[data-l="2"]{background:#96603A}
+.heat i[data-l="3"]{background:#C46E37}.heat i[data-l="4"]{background:var(--accent)}
+.heat-legend{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:9px}
+
+/* ---------- byte visualiser ---------- */
+.viz-grid{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(20px,3vw,36px);align-items:start}
+.drop{border:1.5px dashed var(--line2);border-radius:var(--r);background:var(--panel2);
+  aspect-ratio:1;display:grid;place-items:center;position:relative;overflow:hidden;
+  cursor:pointer;transition:border-color .2s,background .2s}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--wash)}
+.drop canvas{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block}
+.drop .hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);
+  background:linear-gradient(to top,rgba(20,18,14,.92),rgba(20,18,14,.55));
+  opacity:0;transition:opacity .2s;pointer-events:none}
+.drop:hover .hint,.drop.over .hint{opacity:1}
+.readout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:18px 0}
+.readout div{background:var(--panel2);padding:11px 13px}
+.readout dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.readout dd{font-family:var(--mono);font-size:14px;color:var(--ink);margin-top:3px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legend{list-style:none;font-size:14px}
+.legend li{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.legend li:first-child{border-top:0;padding-top:0}
+.legend b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);font-weight:500;flex:0 0 92px;padding-top:4px}
+.privacy{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--accent2);
+  margin-top:16px;display:flex;align-items:center;gap:8px}
+
+/* ---------- work / builds ---------- */
+.role-org{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.01em}
+.role-when{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cell h3{font-family:var(--sans);font-weight:600;font-size:16.5px;color:var(--ink);margin-bottom:10px}
+.cell p{max-width:66ch}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:18px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--muted);
+  background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:4px 9px}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-top:16px}
+.focus{list-style:none}
+.focus li{display:flex;gap:14px;padding:14px 0;border-top:1px solid var(--line);font-size:14.5px}
+.focus li:first-child{border-top:0;padding-top:0}
+.focus b{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;flex:0 0 66px;padding-top:4px}
+.build h3{font-family:var(--mono);font-weight:600;font-size:15px;color:var(--ink);
+  letter-spacing:-.01em;line-height:1.35;margin:0}
+.build-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:11px}
+.chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line2);border-radius:99px;padding:4px 9px;white-space:nowrap}
+.chip.now{color:var(--accent);border-color:var(--accent)}
+.build p{font-size:14px}
+.build .stack{font-family:var(--mono);font-size:10.5px;color:var(--muted);
+  margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}
+.skills{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--gap)}
+.skills dt{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.skills dd{font-family:var(--mono);font-size:12.5px;color:var(--ink2);line-height:2}
+
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center;
+  font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:18px 6px 6px}
+.foot a:hover{color:var(--accent)}
+.footlinks{display:flex;gap:20px;flex-wrap:wrap}
+
+/* ---------- command palette ---------- */
+.cmdk{position:fixed;inset:0;z-index:300;display:none;padding:14vh 16px 16px;
+  background:rgba(10,9,6,.72);backdrop-filter:blur(6px)}
+.cmdk.open{display:block}
+.cmdk-box{max-width:520px;margin:0 auto;background:var(--panel);border:1px solid var(--line2);
+  border-radius:12px;overflow:hidden;box-shadow:0 28px 70px -20px rgba(0,0,0,.8)}
+.cmdk input{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);
+  padding:17px 20px;color:var(--ink);font-family:var(--mono);font-size:14px;outline:0}
+.cmdk input::placeholder{color:var(--muted)}
+.cmdk ul{list-style:none;max-height:min(380px,52vh);overflow-y:auto;padding:7px}
+.cmdk li{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:7px;cursor:pointer;
+  font-family:var(--mono);font-size:13px;color:var(--ink2)}
+.cmdk li[aria-selected="true"]{background:var(--wash);color:var(--ink)}
+.cmdk li .k{margin-left:auto;font-size:10px;color:var(--muted);letter-spacing:.08em}
+.cmdk li .ic{color:var(--accent);flex:0 0 15px;display:grid;place-items:center}
+.cmdk-foot{border-top:1px solid var(--line);padding:9px 16px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.09em;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);z-index:400;
+  background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:11px 18px;
+  font-family:var(--mono);font-size:12px;color:var(--ink);opacity:0;pointer-events:none;
+  transition:opacity .22s,transform .22s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+.rise{opacity:0;transform:translateY(12px);
+  transition:opacity .5s cubic-bezier(.2,.7,.3,1),transform .5s cubic-bezier(.2,.7,.3,1)}
+.rise.in{opacity:1;transform:none}
+
+@media(max-width:1000px){
+  .c7,.c6,.c5{grid-column:span 12}
+  .hero{min-height:0}
+  .skills{grid-template-columns:repeat(2,1fr)}
+  .viz-grid{grid-template-columns:1fr}
+  .drop{aspect-ratio:16/10;max-height:300px}
+}
+@media(max-width:640px){
+  :root{--gap:10px}
+  body{font-size:14.5px}
+  .skills{grid-template-columns:1fr}
+  .readout{grid-template-columns:1fr}
+  .toplinks .hide-sm{display:none}
+  .cta .btn{flex:1;justify-content:center}
+  .legend b{flex-basis:78px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .rise{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div class="shell">
+
+  <div class="topbar">
+    <a class="brand" href="#top">suryansh<span>.</span>kumar</a>
+    <nav class="toplinks">
+      <button class="kbd" id="cmdBtn" aria-label="Open command menu">⌘K</button>
+      <a href="#work" class="hide-sm">work</a>
+      <a href="#builds" class="hide-sm">builds</a>
+      <a data-link="github" href="#" target="_blank" rel="noopener">github</a>
+      <a class="btn btn-primary" data-link="resume" href="#" download>Résumé ↓</a>
+    </nav>
+  </div>
+
+  <main class="grid" id="top">
+
+    <!-- HERO -->
+    <section class="cell c7 hero rise">
+      <div>
+        <p class="label">B.Tech CSE · VIT Bhopal · 2027</p>
+        <h1>I build systems that run <em>without the cloud</em>.</h1>
+        <p class="lede">
+          Two traineeships at DRDO — an offline assistant that answers questions about your
+          documents using models running on your own machine, and an OSINT platform that pulls
+          entities out of files for investigators. Right now I'm training a neural network to
+          recognise malware families from the shape of their bytes.
+        </p>
+      </div>
+      <div class="cta">
+        <a class="btn btn-primary" data-link="resume" href="#" download>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
+          Download résumé
+        </a>
+        <button class="btn btn-ghost" id="copyMail">Copy email</button>
+      </div>
+    </section>
+
+    <!-- LEETCODE -->
+    <section class="cell c5 rise">
+      <div class="cell-head">
+        <span class="label">LeetCode</span>
+        <span class="pill"><i class="on" id="lcDot"></i><span id="lcSrc">syncing</span></span>
+      </div>
+      <div><span class="lc-num" id="streak">—</span><span class="lc-unit" id="streakUnit">day streak</span></div>
+      <p class="label" style="margin-top:8px" id="lcStatus">Connecting…</p>
+      <div class="split">
+        <div><div class="v" id="easy">—</div><div class="k">Easy</div></div>
+        <div><div class="v" id="medium">—</div><div class="k">Medium</div></div>
+        <div><div class="v" id="hard">—</div><div class="k">Hard</div></div>
+      </div>
+      <div class="heat" id="heat" aria-hidden="true"></div>
+      <div class="heat-legend"><span id="heatFrom">26 weeks ago</span><span>Today</span></div>
+    </section>
+
+    <!-- BYTE VISUALISER -->
+    <section class="cell c12 rise" id="viz">
+      <div class="cell-head">
+        <span class="label">Try it — see a file the way my classifier does</span>
+        <button class="btn btn-ghost btn-sm" id="pickBtn">Choose a file</button>
+      </div>
+      <div class="viz-grid">
+        <div class="drop" id="drop" tabindex="0" role="button"
+             aria-label="Drop a file here to render it as an image">
+          <canvas id="cv" width="512" height="512"></canvas>
+          <span class="hint">Drop any file here<br>or click to choose</span>
+        </div>
+        <div>
+          <p>Every file is just a long list of numbers from 0 to 255 — and so is a grayscale
+             image. So any file can be drawn. Programs from the same family end up looking
+             alike, which is exactly what the classifier learns from.</p>
+
+          <dl class="readout">
+            <div><dt>File</dt><dd id="mName">synthetic sample</dd></div>
+            <div><dt>Size</dt><dd id="mSize">—</dd></div>
+            <div><dt>Rendered</dt><dd id="mDim">—</dd></div>
+            <div><dt>Entropy</dt><dd id="mEnt">—</dd></div>
+          </dl>
+
+          <ul class="legend">
+            <li><b>Flat blocks</b><span>Padding or zeroed regions — nothing stored there.</span></li>
+            <li><b>Fine stripes</b><span>Machine code. The repetition comes from instruction patterns.</span></li>
+            <li><b>Static</b><span>Compressed, encrypted or packed data. Entropy near 8.0 is the giveaway.</span></li>
+          </ul>
+
+          <p class="privacy">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Runs entirely in your browser. Nothing is uploaded.
+          </p>
+          <input type="file" id="file" hidden>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK A -->
+    <section class="cell c7 rise" id="work">
+      <div class="cell-head">
+        <span class="role-org">DRDO — Summer Trainee</span>
+        <span class="role-when">Apr – Jun 2026</span>
+      </div>
+      <h3>Multimodal RAG Document Assistant</h3>
+      <p>An offline assistant that answers questions about uploaded PDFs and cites the exact page
+         each answer came from. Three models run locally through Ollama — one to generate, one to
+         embed, one to read images — so charts, tables and scanned figures are searchable too.
+         Nothing leaves the machine, and there is no per-query cost. Multi-user access runs on
+         session auth with role-based permissions over SQLite.</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">Ollama</span><span class="tag">FAISS</span><span class="tag">LangChain</span><span class="tag">PyMuPDF</span><span class="tag">SQLite</span></div>
+    </section>
+
+    <!-- DIAGRAM -->
+    <figure class="cell c5 diagram rise">
+      <div class="cell-head"><span class="label">How it works</span></div>
+      <svg viewBox="0 0 340 172" role="img" aria-label="Diagram: a document, three local models and an answer, all inside the boundary of one machine.">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8A8271"/></marker></defs>
+        <rect x="6" y="6" width="328" height="132" rx="10" fill="none" stroke="#4A4235" stroke-width="1.1" stroke-dasharray="5 4"/>
+        <text x="18" y="25" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1.2" fill="#8A8271">YOUR MACHINE</text>
+        <rect x="20" y="54" width="72" height="46" rx="7" fill="#221E18" stroke="#322C23"/>
+        <text x="56" y="74" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#F0EAD9">PDF</text>
+        <text x="56" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#8A8271">text · tables</text>
+        <rect x="128" y="38" width="84" height="78" rx="7" fill="#2A2118" stroke="#E8763A" stroke-opacity=".5"/>
+        <text x="170" y="60" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#E8763A">3 models</text>
+        <text x="170" y="77" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#C4BCA8">generate</text>
+        <text x="170" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#C4BCA8">embed</text>
+        <text x="170" y="103" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#C4BCA8">see</text>
+        <rect x="248" y="54" width="72" height="46" rx="7" fill="#221E18" stroke="#322C23"/>
+        <text x="284" y="74" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#F0EAD9">Answer</text>
+        <text x="284" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#8A8271">+ page cite</text>
+        <line x1="96" y1="77" x2="122" y2="77" stroke="#8A8271" stroke-width="1.1" marker-end="url(#ar)"/>
+        <line x1="216" y1="77" x2="242" y2="77" stroke="#8A8271" stroke-width="1.1" marker-end="url(#ar)"/>
+        <text x="170" y="163" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing=".7" fill="#8A8271">no network calls · no API cost</text>
+      </svg>
+      <figcaption>Multimodal RAG assistant — DRDO, 2026</figcaption>
+    </figure>
+
+    <!-- WORK B -->
+    <section class="cell c7 rise">
+      <div class="cell-head">
+        <span class="role-org">DRDO — Winter Trainee</span>
+        <span class="role-when">Nov 2025 – Jan 2026</span>
+      </div>
+      <h3>OSINT Investigation Platform</h3>
+      <p>A full-stack tool that reads uploaded documents and file metadata, extracts names, places
+         and identifiers, and maps how they connect across a case. A locally hosted Llama 3 handles
+         keyword extraction and drafts the report. The schema is normalised across six core entity
+         types so relationships stay traceable as a case grows.</p>
+      <div class="tags"><span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">React</span><span class="tag">PostgreSQL</span><span class="tag">Prisma</span><span class="tag">Ollama</span></div>
+    </section>
+
+    <!-- CURRENTLY -->
+    <section class="cell c5 rise">
+      <div class="cell-head"><span class="label">Currently</span></div>
+      <ul class="focus">
+        <li><b>Building</b><span>A CNN that sorts malware into 25 families by rendering each binary as a grayscale image. Scored on macro-F1, because one family is a third of the dataset.</span></li>
+        <li><b>Reading</b><span>Open-set recognition — how a classifier can say "I have never seen this" instead of confidently guessing.</span></li>
+        <li><b>Open to</b><span>SDE internships and new-grad roles, from mid-2026.</span></li>
+      </ul>
+    </section>
+
+    <!-- BUILDS -->
+    <section class="cell c6 build rise" id="builds">
+      <div class="build-top"><h3>Malware Family Classifier</h3><span class="chip now">In progress</span></div>
+      <p>Every file is a list of numbers, and so is every image — so a program can be drawn as a
+         picture, and malware from the same family looks alike. A CNN trained from scratch sorts
+         binaries into 25 families, benchmarked against a fine-tuned ResNet-18.</p>
+      <div class="stack">PyTorch · ResNet-18 · FastAPI · Docker · PyTest</div>
+    </section>
+
+    <section class="cell c6 build rise">
+      <div class="build-top"><h3>Medication Recommender</h3><span class="chip">Shipped</span></div>
+      <p>Maps symptoms to medications across 3,000+ records. Decision Tree, SVM and KNN compared
+         under 5-fold cross-validation, with the best model reaching ~89% held-out accuracy.</p>
+      <div class="stack">Python · scikit-learn · Pandas · NumPy</div>
+    </section>
+
+    <section class="cell c6 build rise">
+      <div class="build-top"><h3>Mind Connect</h3><span class="chip">Shipped</span></div>
+      <p>An anonymous mental-health support board. JWT sessions, bcrypt hashing, and a schema
+         deliberately designed so posts cannot be traced back to the accounts that wrote them.</p>
+      <div class="stack">React · Node.js · Express · JWT</div>
+    </section>
+
+    <section class="cell c6 build rise">
+      <div class="build-top"><h3>Ultrasonic Change Detection</h3><span class="chip">Shipped</span></div>
+      <p>An Arduino radar sweeping 180° with HC-SR04 sensors, accurate to within ±3 cm. FFT and
+         low-pass filtering clean the returns before anything gets reported as a change.</p>
+      <div class="stack">Arduino · C++ · Signal Processing</div>
+    </section>
+
+    <!-- STACK -->
+    <section class="cell c12 rise">
+      <div class="cell-head"><span class="label">Stack</span></div>
+      <dl class="skills">
+        <div><dt>Languages</dt><dd>Java<br>Python<br>C++<br>SQL<br>JavaScript</dd></div>
+        <div><dt>Backend</dt><dd>Node.js<br>Express<br>Flask<br>React<br>REST</dd></div>
+        <div><dt>Data</dt><dd>PostgreSQL<br>MySQL<br>MongoDB<br>SQLite<br>Prisma</dd></div>
+        <div><dt>AI / ML</dt><dd>PyTorch<br>scikit-learn<br>FAISS<br>LangChain<br>Ollama</dd></div>
+        <div><dt>Tools</dt><dd>Git<br>Docker<br>AWS<br>Linux<br>Pandas</dd></div>
+      </dl>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <span>Bhopal, India · Open to SDE roles · Press <b style="color:var(--accent)">⌘K</b></span>
+    <div class="footlinks">
+      <a data-link="email" href="#">email</a>
+      <a data-link="github" href="#" target="_blank" rel="noopener">github</a>
+      <a data-link="linkedin" href="#" target="_blank" rel="noopener">linkedin</a>
+      <a data-link="resume" href="#" download>résumé</a>
+    </div>
+  </footer>
+</div>
+
+<!-- command palette -->
+<div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-label="Command menu">
+  <div class="cmdk-box">
+    <input id="cmdInput" placeholder="Type a command…" autocomplete="off" spellcheck="false">
+    <ul id="cmdList" role="listbox"></ul>
+    <div class="cmdk-foot"><span>↑↓ navigate</span><span>↵ select</span><span>esc close</span></div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   EDIT EVERYTHING HERE — nothing personal lives anywhere else
+   ════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  username :'suryansh_4053',                        // LeetCode username (case-sensitive)
+  email    :'suryanshyadsv@gmail.com',
+  github   :'https://github.com/suryansh4053',
+  linkedin :'',                                     // ← paste your URL. Empty = link hides.
+  resume   :'Suryansh_Kumar_Resume.pdf',            // must sit beside index.html
+  localFeed:'data/leetcode.json',                   // written by the GitHub Action
+
+  // Shown only if every LeetCode source is unreachable. Keep it roughly current.
+  fallback :{ total:19, easy:15, medium:4, hard:0, streak:null }
+};
+
+/* wire every link from CONFIG; drop any that isn't set */
+const LINKS = {
+  email   : CONFIG.email ? 'mailto:' + CONFIG.email : '',
+  github  : CONFIG.github,
+  linkedin: CONFIG.linkedin,
+  resume  : CONFIG.resume,
+  leetcode: CONFIG.username ? 'https://leetcode.com/u/' + CONFIG.username + '/' : ''
+};
+document.querySelectorAll('[data-link]').forEach(el => {
+  const href = LINKS[el.dataset.link];
+  if (href) el.setAttribute('href', href); else el.remove();
+});
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = id => document.getElementById(id);
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ---------- scroll progress ---------- */
+addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  $('prog').style.width = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+}, {passive:true});
+
+/* ---------- spotlight ---------- */
+if (!REDUCED && matchMedia('(hover:hover)').matches){
+  document.querySelectorAll('.cell').forEach(c => {
+    c.addEventListener('pointermove', e => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+}
+
+/* ---------- reveal ---------- */
+if (!REDUCED){
+  const io = new IntersectionObserver(es => es.forEach((e,i) => {
+    if (e.isIntersecting){ setTimeout(() => e.target.classList.add('in'), i*60); io.unobserve(e.target); }
+  }), { rootMargin:'0px 0px -6% 0px' });
+  document.querySelectorAll('.rise').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.rise').forEach(el => el.classList.add('in'));
+}
+
+/* ---------- count up ---------- */
+function countTo(el, val){
+  if (REDUCED || !Number.isFinite(val)){ el.textContent = val ?? '—'; return; }
+  const t0 = performance.now(), dur = 750;
+  (function step(t){
+    const p = Math.min(1, (t - t0) / dur);
+    el.textContent = Math.round(val * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+/* ---------- copy email ---------- */
+async function copyMail(){
+  try { await navigator.clipboard.writeText(CONFIG.email); toast('Email copied'); }
+  catch { location.href = 'mailto:' + CONFIG.email; }
+}
+$('copyMail').addEventListener('click', copyMail);
+
+/* ============================================================
+   BYTE VISUALISER — the same conversion the classifier uses
+   ============================================================ */
+const WIDTHS = [[10,32],[30,64],[60,128],[100,256],[200,384],[500,512],[1000,768]];
+const widthFor = n => { const kb = n/1024; for (const [lim,w] of WIDTHS) if (kb < lim) return w; return 1024; };
+
+function entropy(bytes){
+  const f = new Uint32Array(256);
+  const step = Math.max(1, Math.floor(bytes.length / 500000));   // sample huge files
+  let n = 0;
+  for (let i = 0; i < bytes.length; i += step){ f[bytes[i]]++; n++; }
+  let h = 0;
+  for (let i = 0; i < 256; i++) if (f[i]){ const p = f[i]/n; h -= p * Math.log2(p); }
+  return h;
+}
+
+const cv = $('cv'), ctx = cv.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+function draw(bytes, name){
+  const w = widthFor(bytes.length);
+  const h = Math.floor(bytes.length / w);
+  if (h < 1){ toast('File too small to render'); return; }
+
+  const off = document.createElement('canvas');
+  off.width = w; off.height = h;
+  const img = off.getContext('2d').createImageData(w, h);
+  for (let i = 0, n = w*h; i < n; i++){
+    const v = bytes[i], o = i*4;
+    img.data[o] = img.data[o+1] = img.data[o+2] = v;
+    img.data[o+3] = 255;
+  }
+  off.getContext('2d').putImageData(img, 0, 0);
+
+  const S = 512;
+  cv.width = cv.height = S;
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = '#14120E'; ctx.fillRect(0, 0, S, S);
+  const scale = Math.min(S/w, S/h);
+  const dw = Math.max(1, w*scale), dh = Math.max(1, h*scale);
+  ctx.drawImage(off, (S-dw)/2, (S-dh)/2, dw, dh);
+
+  const kb = bytes.length / 1024;
+  $('mName').textContent = name;
+  $('mName').title = name;
+  $('mSize').textContent = kb > 1024 ? (kb/1024).toFixed(2) + ' MB' : kb.toFixed(1) + ' KB';
+  $('mDim').textContent = w + ' × ' + h + ' px';
+  $('mEnt').textContent = entropy(bytes).toFixed(2) + ' / 8.00';
+}
+
+/* a synthetic binary so the panel is never empty on load */
+function sample(){
+  const n = 96 * 1024, b = new Uint8Array(n);
+  for (let i = 0; i < n; i++){
+    const z = i / n;
+    if (z < 0.04)      b[i] = (i % 16 < 4) ? 60 + (i % 7) * 12 : 12;        // header
+    else if (z < 0.46) b[i] = 96 + Math.sin(i / 3.1) * 34 + (i % 11) * 5;   // code
+    else if (z < 0.60) b[i] = 0;                                            // padding
+    else if (z < 0.80) b[i] = Math.random() * 255;                          // packed
+    else               b[i] = 150 + Math.sin(i / 260) * 60 + (i % 5) * 4;   // data
+  }
+  return b;
+}
+
+function readFile(f){
+  if (f.size > 12 * 1024 * 1024){ toast('Keep it under 12 MB'); return; }
+  const r = new FileReader();
+  r.onload = () => draw(new Uint8Array(r.result), f.name);
+  r.onerror = () => toast("Couldn't read that file");
+  r.readAsArrayBuffer(f);
+}
+
+const drop = $('drop'), fileIn = $('file');
+drop.addEventListener('click', () => fileIn.click());
+$('pickBtn').addEventListener('click', () => fileIn.click());
+drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fileIn.click(); }});
+fileIn.addEventListener('change', e => e.target.files[0] && readFile(e.target.files[0]));
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => e.dataTransfer.files[0] && readFile(e.dataTransfer.files[0]));
+draw(sample(), 'synthetic sample');
+
+/* ============================================================
+   COMMAND PALETTE
+   ============================================================ */
+const ACTIONS = [
+  { t:'Download résumé',    k:'pdf',      needs:'resume',   run:() => { const a=document.createElement('a'); a.href=LINKS.resume; a.download=''; a.click(); } },
+  { t:'Copy email address', k:'mail',     needs:'email',    run:copyMail },
+  { t:'Render a file',      k:'bytes',    run:() => { $('viz').scrollIntoView({block:'center'}); setTimeout(()=>fileIn.click(),400); } },
+  { t:'Go to work',         k:'jump',     run:() => $('work').scrollIntoView() },
+  { t:'Go to builds',       k:'jump',     run:() => $('builds').scrollIntoView() },
+  { t:'Open GitHub',        k:'external', needs:'github',   run:() => open(LINKS.github,'_blank','noopener') },
+  { t:'Open LinkedIn',      k:'external', needs:'linkedin', run:() => open(LINKS.linkedin,'_blank','noopener') },
+  { t:'Open LeetCode',      k:'external', needs:'leetcode', run:() => open(LINKS.leetcode,'_blank','noopener') },
+  { t:'Back to top',        k:'jump',     run:() => scrollTo({top:0}) }
+].filter(a => !a.needs || LINKS[a.needs]);
+
+const modal = $('cmdk'), input = $('cmdInput'), list = $('cmdList');
+let shown = [], sel = 0;
+
+function paint(){
+  const q = input.value.trim().toLowerCase();
+  shown = ACTIONS.filter(a => (a.t + ' ' + a.k).toLowerCase().includes(q));
+  sel = 0;
+  list.innerHTML = shown.map((a,i) =>
+    `<li role="option" data-i="${i}" aria-selected="${i===0}">
+       <span class="ic">›</span><span>${a.t}</span><span class="k">${a.k}</span>
+     </li>`).join('') || `<li aria-selected="false" style="color:var(--muted)">No matches</li>`;
+}
+function mark(){
+  [...list.children].forEach((li,i) => li.setAttribute('aria-selected', String(i === sel)));
+  list.children[sel]?.scrollIntoView({block:'nearest'});
+}
+function openCmd(){ modal.classList.add('open'); input.value=''; paint(); input.focus(); }
+function closeCmd(){ modal.classList.remove('open'); }
+function runSel(){ const a = shown[sel]; if (a){ closeCmd(); a.run(); } }
+
+$('cmdBtn').addEventListener('click', openCmd);
+input.addEventListener('input', paint);
+list.addEventListener('click', e => { const li = e.target.closest('li[data-i]'); if (li){ sel = +li.dataset.i; runSel(); } });
+modal.addEventListener('click', e => { if (e.target === modal) closeCmd(); });
+addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); modal.classList.contains('open') ? closeCmd() : openCmd(); return; }
+  if (!modal.classList.contains('open')) return;
+  if (e.key === 'Escape'){ closeCmd(); }
+  else if (e.key === 'ArrowDown'){ e.preventDefault(); sel = Math.min(sel+1, shown.length-1); mark(); }
+  else if (e.key === 'ArrowUp'){ e.preventDefault(); sel = Math.max(sel-1, 0); mark(); }
+  else if (e.key === 'Enter'){ e.preventDefault(); runSel(); }
+});
+
+/* ============================================================
+   LEETCODE
+   ============================================================ */
+const U = encodeURIComponent(CONFIG.username);
+const SOURCES = [
+  { name:'repo', url:CONFIG.localFeed, parse:d => d },
+  { name:'live', url:`https://leetcode-api-faisalshohag.vercel.app/${U}`,
+    parse:d => ({ total:d.totalSolved, easy:d.easySolved, medium:d.mediumSolved, hard:d.hardSolved, calendar:d.submissionCalendar||null }) },
+  { name:'live', url:`https://alfa-leetcode-api.onrender.com/${U}/solved`,
+    parse:d => ({ total:d.solvedProblem, easy:d.easySolved, medium:d.mediumSolved, hard:d.hardSolved, calendar:null }) },
+  { name:'live', url:`https://leetcode-stats-api.herokuapp.com/${U}`,
+    parse:d => { if (d.status === 'error') throw new Error(d.message);
+      return { total:d.totalSolved, easy:d.easySolved, medium:d.mediumSolved, hard:d.hardSolved, calendar:d.submissionCalendar||null }; } }
+];
+
+async function getJSON(url, ms=7000){
+  const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+  try { const r = await fetch(url, {signal:c.signal, cache:'no-store'});
+        if (!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
+  finally { clearTimeout(t); }
+}
+function streakFrom(cal){
+  if (!cal) return null;
+  const raw = typeof cal === 'string' ? JSON.parse(cal) : cal;
+  const days = new Set(Object.entries(raw).filter(([,n]) => n>0).map(([s]) => Math.floor(Number(s)/86400)));
+  const today = Math.floor(Date.now()/86400000);
+  let cur = days.has(today) ? today : today-1, n = 0;
+  while (days.has(cur)){ n++; cur--; }
+  return n;
+}
+function heatmap(cal){
+  const box = $('heat'); box.innerHTML = '';
+  const raw = cal ? (typeof cal === 'string' ? JSON.parse(cal) : cal) : {};
+  const counts = {};
+  for (const [s,n] of Object.entries(raw)) counts[Math.floor(Number(s)/86400)] = n;
+  const weeks = innerWidth < 640 ? 18 : 26;
+  const today = Math.floor(Date.now()/86400000), start = today - (weeks*7-1);
+  for (let w = 0; w < weeks; w++){
+    const col = document.createElement('div'); col.className = 'heat-col';
+    for (let d = 0; d < 7; d++){
+      const day = start + w*7 + d, c = counts[day] || 0;
+      const i = document.createElement('i');
+      if (day <= today && c > 0) i.dataset.l = c>=6?4:c>=3?3:c>=2?2:1;
+      col.appendChild(i);
+    }
+    box.appendChild(col);
+  }
+  $('heatFrom').textContent = weeks + ' weeks ago';
+}
+function render(s, live){
+  for (const k of ['easy','medium','hard']) countTo($(k), s[k]);
+  const el = $('streak');
+  if (s.streak === null || s.streak === undefined){ countTo(el, s.total); $('streakUnit').textContent = 'problems solved'; }
+  else { countTo(el, s.streak); $('streakUnit').textContent = 'day streak'; }
+  $('lcDot').classList.toggle('on', !!live);
+  $('lcSrc').textContent = live ? 'live' : 'cached';
+  $('lcStatus').textContent = live
+    ? `${s.total ?? '—'} solved · synced ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}`
+    : `${s.total ?? '—'} solved · last known figures`;
+}
+(async function load(){
+  let got = false;
+  for (const src of SOURCES){
+    try {
+      const s = src.parse(await getJSON(src.url));
+      if (typeof s.total !== 'number') throw new Error('no count');
+      if (s.streak === undefined) s.streak = streakFrom(s.calendar);
+      render(s, true); heatmap(s.calendar); got = true;
+      if (src.name === 'repo') continue;
+      return;
+    } catch(e){ console.warn('[leetcode]', src.url, e.message); }
+  }
+  if (!got){ render(CONFIG.fallback, false); heatmap(null); }
+})();
+</script>
+</body>
+</html>

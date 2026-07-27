@@ -1,0 +1,70 @@
+name: Sync LeetCode
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'      # every 6 hours
+  workflow_dispatch:            # and a manual "Run workflow" button
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Query LeetCode
+        env:
+          LC_USER: suryansh_4053
+        run: |
+          mkdir -p data
+          read -r -d '' Q <<'GQL' || true
+          query u($u: String!) {
+            matchedUser(username: $u) {
+              submitStatsGlobal { acSubmissionNum { difficulty count } }
+              userCalendar { streak totalActiveDays submissionCalendar }
+            }
+          }
+          GQL
+
+          jq -n --arg q "$Q" --arg u "$LC_USER" \
+            '{query:$q, variables:{u:$u}}' > body.json
+
+          curl -sS https://leetcode.com/graphql \
+            -H 'Content-Type: application/json' \
+            -H 'Referer: https://leetcode.com' \
+            -H 'User-Agent: Mozilla/5.0' \
+            --data @body.json -o raw.json
+
+          # Bail out without committing if LeetCode returned an error or no user
+          if ! jq -e '.data.matchedUser' raw.json > /dev/null; then
+            echo "::warning::No data returned — leaving previous file untouched"
+            cat raw.json
+            exit 0
+          fi
+
+          jq '{
+            total:    (.data.matchedUser.submitStatsGlobal.acSubmissionNum[]
+                        | select(.difficulty=="All")    | .count),
+            easy:     (.data.matchedUser.submitStatsGlobal.acSubmissionNum[]
+                        | select(.difficulty=="Easy")   | .count),
+            medium:   (.data.matchedUser.submitStatsGlobal.acSubmissionNum[]
+                        | select(.difficulty=="Medium") | .count),
+            hard:     (.data.matchedUser.submitStatsGlobal.acSubmissionNum[]
+                        | select(.difficulty=="Hard")   | .count),
+            streak:   .data.matchedUser.userCalendar.streak,
+            activeDays: .data.matchedUser.userCalendar.totalActiveDays,
+            calendar: (.data.matchedUser.userCalendar.submissionCalendar | fromjson),
+            syncedAt: (now | todate)
+          }' raw.json > data/leetcode.json
+
+          cat data/leetcode.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "leetcode-sync"
+          git config user.email "actions@github.com"
+          git add data/leetcode.json
+          git diff --staged --quiet || git commit -m "chore: sync leetcode stats"
+          git push
