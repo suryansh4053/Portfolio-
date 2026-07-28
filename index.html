@@ -453,10 +453,10 @@ const CONFIG = {
   resume   :'Suryansh_Kumar_Resume.pdf',            // must sit beside index.html
   localFeed:'data/leetcode.json',                   // written by the GitHub Action
 
-  // Cloudflare Worker (worker/src/index.js). Paste the deployed URL here.
-  // e.g. 'https://leetcode-api.<your-subdomain>.workers.dev/leetcode'
-  // Empty = the API source is skipped and the repo feed is used instead.
-  api      :'',
+  // Cloudflare Worker (worker/src/index.js). Until it is deployed this URL
+  // 404s, the fetch fails, and the repo feed below takes over — so wiring it
+  // early is harmless and it starts working the moment the deploy succeeds.
+  api      :'https://leetcode-api.itzmaxton4000.workers.dev/leetcode',
 
   // Shown only if every LeetCode source is unreachable. Keep it roughly current.
   fallback :{ total:19, easy:15, medium:4, hard:0, streak:null }
@@ -683,6 +683,14 @@ async function getJSON(url, ms=7000){
         if (!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
   finally { clearTimeout(t); }
 }
+/* The public mirrors intermittently answer with a total but a zeroed-out
+   breakdown and no calendar. Accepting that wipes good data off the card, so
+   a payload has to be internally consistent before it is allowed to render. */
+function usable(s){
+  if (!Number.isFinite(s.total)) return false;
+  const breakdown = (s.easy || 0) + (s.medium || 0) + (s.hard || 0);
+  return breakdown > 0 || s.total === 0;
+}
 function streakFrom(cal){
   if (!cal) return null;
   const raw = typeof cal === 'string' ? JSON.parse(cal) : cal;
@@ -723,18 +731,22 @@ function render(s, live){
     : `${s.total ?? '—'} solved · last known figures`;
 }
 (async function load(){
-  let got = false;
+  let got = false, drewHeat = false;
   for (const src of SOURCES){
     try {
       const s = src.parse(await getJSON(src.url));
-      if (typeof s.total !== 'number') throw new Error('no count');
+      if (!usable(s)) throw new Error('incomplete payload');
       if (s.streak === undefined) s.streak = streakFrom(s.calendar);
-      render(s, src.name !== 'repo'); heatmap(s.calendar); got = true;
+      render(s, src.name !== 'repo');
+      // a source without a calendar must not blank a heatmap already drawn
+      if (s.calendar){ heatmap(s.calendar); drewHeat = true; }
+      got = true;
       if (src.name === 'repo') continue;
-      return;
+      break;
     } catch(e){ console.warn('[leetcode]', src.url, e.message); }
   }
-  if (!got){ render(CONFIG.fallback, false); heatmap(null); }
+  if (!got) render(CONFIG.fallback, false);
+  if (!drewHeat) heatmap(null);
 })();
 </script>
 </body>

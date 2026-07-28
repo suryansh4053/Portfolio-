@@ -16,7 +16,19 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+
+      # Without this the job dies as a bare "npx failed with exit code 1",
+      # which gives no hint that the secret is simply missing.
+      - name: Check credentials
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is not set. Add it under Settings > Secrets and variables > Actions, then re-run this workflow."
+            exit 1
+          fi
+          echo "Token is present."
 
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
