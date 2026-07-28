@@ -130,6 +130,10 @@ h1 em{font-style:normal;color:var(--accent)}
 /* ---------- work / builds ---------- */
 .role-org{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.01em}
 .role-when{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.srclink{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;
+  color:var(--muted);border-bottom:1px solid var(--line2);margin-left:11px;
+  white-space:nowrap;transition:color .2s,border-color .2s}
+.srclink:hover{color:var(--accent);border-color:var(--accent)}
 .cell h3{font-family:var(--sans);font-weight:600;font-size:16.5px;color:var(--ink);margin-bottom:10px}
 .cell p{max-width:66ch}
 .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto;padding-top:18px}
@@ -311,7 +315,7 @@ h1 em{font-style:normal;color:var(--accent)}
     <!-- WORK A -->
     <section class="cell c7 rise" id="work">
       <div class="cell-head">
-        <span class="role-org">DRDO — Summer Trainee</span>
+        <span class="role-org">DRDO — Summer Trainee<a class="srclink" href="https://github.com/suryansh4053/multimodal-rag" target="_blank" rel="noopener">code ↗</a></span>
         <span class="role-when">Apr – Jun 2026</span>
       </div>
       <h3>Multimodal RAG Document Assistant</h3>
@@ -351,7 +355,7 @@ h1 em{font-style:normal;color:var(--accent)}
     <!-- WORK B -->
     <section class="cell c7 rise">
       <div class="cell-head">
-        <span class="role-org">DRDO — Winter Trainee</span>
+        <span class="role-org">DRDO — Winter Trainee<a class="srclink" href="https://github.com/suryansh4053/Investigation-AI" target="_blank" rel="noopener">code ↗</a></span>
         <span class="role-when">Nov 2025 – Jan 2026</span>
       </div>
       <h3>OSINT Investigation Platform</h3>
@@ -448,6 +452,11 @@ const CONFIG = {
   linkedin :'',                                     // ← paste your URL. Empty = link hides.
   resume   :'Suryansh_Kumar_Resume.pdf',            // must sit beside index.html
   localFeed:'data/leetcode.json',                   // written by the GitHub Action
+
+  // Cloudflare Worker (worker/src/index.js). Paste the deployed URL here.
+  // e.g. 'https://leetcode-api.<your-subdomain>.workers.dev/leetcode'
+  // Empty = the API source is skipped and the repo feed is used instead.
+  api      :'',
 
   // Shown only if every LeetCode source is unreachable. Keep it roughly current.
   fallback :{ total:19, easy:15, medium:4, hard:0, streak:null }
@@ -655,6 +664,9 @@ addEventListener('keydown', e => {
    ============================================================ */
 const U = encodeURIComponent(CONFIG.username);
 const SOURCES = [
+  // own API first — live, and the only source whose uptime is ours to fix
+  CONFIG.api && { name:'api', url:CONFIG.api, parse:d => d },
+  // repo feed renders instantly while the network sources are still in flight
   { name:'repo', url:CONFIG.localFeed, parse:d => d },
   { name:'live', url:`https://leetcode-api-faisalshohag.vercel.app/${U}`,
     parse:d => ({ total:d.totalSolved, easy:d.easySolved, medium:d.mediumSolved, hard:d.hardSolved, calendar:d.submissionCalendar||null }) },
@@ -663,7 +675,7 @@ const SOURCES = [
   { name:'live', url:`https://leetcode-stats-api.herokuapp.com/${U}`,
     parse:d => { if (d.status === 'error') throw new Error(d.message);
       return { total:d.totalSolved, easy:d.easySolved, medium:d.mediumSolved, hard:d.hardSolved, calendar:d.submissionCalendar||null }; } }
-];
+].filter(Boolean);
 
 async function getJSON(url, ms=7000){
   const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
@@ -717,7 +729,7 @@ function render(s, live){
       const s = src.parse(await getJSON(src.url));
       if (typeof s.total !== 'number') throw new Error('no count');
       if (s.streak === undefined) s.streak = streakFrom(s.calendar);
-      render(s, true); heatmap(s.calendar); got = true;
+      render(s, src.name !== 'repo'); heatmap(s.calendar); got = true;
       if (src.name === 'repo') continue;
       return;
     } catch(e){ console.warn('[leetcode]', src.url, e.message); }

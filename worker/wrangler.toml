@@ -1,0 +1,19 @@
+name = "leetcode-api"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[vars]
+LC_USER = "suryansh_4053"
+
+# Comma-separated origin allowlist, or "*" for a fully public API.
+# Tighten this to your own origins once the custom domain is live, e.g.
+#   ALLOWED_ORIGINS = "https://suryansh4053.github.io,https://yourdomain.com"
+ALLOWED_ORIGINS = "*"
+
+# Uncomment once the domain is registered and its nameservers point at Cloudflare,
+# to serve the API from api.yourdomain.com instead of *.workers.dev.
+# [[routes]]
+# pattern = "api.yourdomain.com/*"
+# zone_name = "yourdomain.com"
+# custom_domain = true

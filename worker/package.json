@@ -1,0 +1,14 @@
+{
+  "name": "leetcode-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker serving cached LeetCode statistics for the portfolio site",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
