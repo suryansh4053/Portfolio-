@@ -120,31 +120,19 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
 .heat-legend{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;
   letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:9px}
 
-/* ---------- byte visualiser ---------- */
-.viz-grid{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:clamp(20px,3vw,36px);align-items:start}
-.drop{border:1.5px dashed var(--line2);border-radius:var(--r);background:var(--panel2);
-  aspect-ratio:1;display:grid;place-items:center;position:relative;overflow:hidden;
-  cursor:pointer;transition:border-color .2s,background .2s}
-.drop:hover,.drop.over{border-color:var(--accent);background:var(--wash)}
-.drop canvas{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block}
-.drop .hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);
-  background:linear-gradient(to top,rgba(12,11,9,.93),rgba(12,11,9,.55));
-  opacity:0;transition:opacity .2s;pointer-events:none}
-.drop:hover .hint,.drop.over .hint{opacity:1}
-.readout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);
-  border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:18px 0}
-.readout div{background:var(--panel2);padding:11px 13px}
-.readout dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.readout dd{font-family:var(--mono);font-size:14px;color:var(--ink);margin-top:3px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.legend{list-style:none;font-size:14px}
-.legend li{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
-.legend li:first-child{border-top:0;padding-top:0}
-.legend b{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--accent);font-weight:500;flex:0 0 92px;padding-top:4px}
-.privacy{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--accent2);
-  margin-top:16px;display:flex;align-items:center;gap:8px}
+/* ---------- education ---------- */
+.edu-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(22px,3.5vw,44px);align-items:start}
+.edu-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.edu-grid .edu-top h3{font-family:var(--mono);font-weight:600;font-size:17px;color:var(--ink);
+  letter-spacing:-.01em;margin:0}
+.edu-deg{font-size:14.5px;color:var(--ink2);margin-top:5px}
+.edu-grid .tags{margin-top:12px;padding-top:0}
+.certs{list-style:none}
+.certs li{display:flex;flex-direction:column;gap:4px;padding:13px 0;border-top:1px solid var(--line)}
+.certs li:first-child{border-top:0;padding-top:0}
+.certs b{font-weight:600;font-size:14.5px;color:var(--ink);line-height:1.35}
+.certs span{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted)}
 
 /* ---------- work / builds ---------- */
 .role-org{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.01em}
@@ -234,18 +222,15 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
   .c8,.c7,.c6,.c5,.c4{grid-column:span 12}
   .hero{min-height:0}
   .skills{grid-template-columns:repeat(2,1fr)}
-  .viz-grid{grid-template-columns:1fr}
-  .drop{aspect-ratio:16/10;max-height:300px}
+  .edu-grid{grid-template-columns:1fr}
 }
 @media(max-width:640px){
   :root{--gap:10px}
   body{font-size:14.5px}
   .skills{grid-template-columns:1fr}
-  .readout{grid-template-columns:1fr}
   .toplinks .hide-sm{display:none}
   .cta .btn{flex:1;justify-content:center}
   .clinks .mailbtn{flex:1 1 100%;justify-content:center}
-  .legend b{flex-basis:78px}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -310,41 +295,36 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
       <div class="heat-legend"><span id="heatFrom">26 weeks ago</span><span>Today</span></div>
     </section>
 
-    <!-- BYTE VISUALISER -->
-    <section class="cell c12 rise" id="viz">
+    <!-- EDUCATION -->
+    <section class="cell c12 rise" id="education">
       <div class="cell-head">
-        <span class="label">Try it — see a file the way my classifier does</span>
-        <button class="btn btn-ghost btn-sm" id="pickBtn">Choose a file</button>
+        <span class="label">Education &amp; Certifications</span>
+        <span class="role-when">Bhopal, Madhya Pradesh</span>
       </div>
-      <div class="viz-grid">
-        <div class="drop" id="drop" tabindex="0" role="button"
-             aria-label="Drop a file here to render it as an image">
-          <canvas id="cv" width="512" height="512"></canvas>
-          <span class="hint">Drop any file here<br>or click to choose</span>
+      <div class="edu-grid">
+        <div>
+          <div class="edu-top">
+            <h3>VIT Bhopal University</h3>
+            <span class="role-when">2023 – 2027</span>
+          </div>
+          <p class="edu-deg">B.Tech, Computer Science and Engineering (Core)</p>
+          <p class="label" style="margin-top:20px">Relevant coursework</p>
+          <div class="tags">
+            <span class="tag">Data Structures &amp; Algorithms</span>
+            <span class="tag">Operating Systems</span>
+            <span class="tag">DBMS</span>
+            <span class="tag">Computer Networks</span>
+            <span class="tag">Object-Oriented Programming</span>
+            <span class="tag">Software Engineering</span>
+          </div>
         </div>
         <div>
-          <p>Every file is just a long list of numbers from 0 to 255 — and so is a grayscale
-             image. So any file can be drawn. Programs from the same family end up looking
-             alike, which is exactly what the classifier learns from.</p>
-
-          <dl class="readout">
-            <div><dt>File</dt><dd id="mName">synthetic sample</dd></div>
-            <div><dt>Size</dt><dd id="mSize">—</dd></div>
-            <div><dt>Rendered</dt><dd id="mDim">—</dd></div>
-            <div><dt>Entropy</dt><dd id="mEnt">—</dd></div>
-          </dl>
-
-          <ul class="legend">
-            <li><b>Flat blocks</b><span>Padding or zeroed regions — nothing stored there.</span></li>
-            <li><b>Fine stripes</b><span>Machine code. The repetition comes from instruction patterns.</span></li>
-            <li><b>Static</b><span>Compressed, encrypted or packed data. Entropy near 8.0 is the giveaway.</span></li>
+          <p class="label" style="margin-bottom:15px">Certifications &amp; training</p>
+          <ul class="certs">
+            <li><b>AWS Technical Essentials</b><span>AWS digital training</span></li>
+            <li><b>The Bits and Bytes of Computer Networking</b><span>Google · Coursera</span></li>
+            <li><b>NPTEL</b><span>IIT Madras</span></li>
           </ul>
-
-          <p class="privacy">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Runs entirely in your browser. Nothing is uploaded.
-          </p>
-          <input type="file" id="file" hidden>
         </div>
       </div>
     </section>
@@ -601,96 +581,14 @@ document.querySelectorAll('[data-copy-mail]').forEach(el => el.addEventListener(
 if (CONFIG.email) $('mailLabel').textContent = CONFIG.email;
 
 /* ============================================================
-   BYTE VISUALISER — the same conversion the classifier uses
-   ============================================================ */
-const WIDTHS = [[10,32],[30,64],[60,128],[100,256],[200,384],[500,512],[1000,768]];
-const widthFor = n => { const kb = n/1024; for (const [lim,w] of WIDTHS) if (kb < lim) return w; return 1024; };
-
-function entropy(bytes){
-  const f = new Uint32Array(256);
-  const step = Math.max(1, Math.floor(bytes.length / 500000));   // sample huge files
-  let n = 0;
-  for (let i = 0; i < bytes.length; i += step){ f[bytes[i]]++; n++; }
-  let h = 0;
-  for (let i = 0; i < 256; i++) if (f[i]){ const p = f[i]/n; h -= p * Math.log2(p); }
-  return h;
-}
-
-const cv = $('cv'), ctx = cv.getContext('2d');
-ctx.imageSmoothingEnabled = false;
-
-function draw(bytes, name){
-  const w = widthFor(bytes.length);
-  const h = Math.floor(bytes.length / w);
-  if (h < 1){ toast('File too small to render'); return; }
-
-  const off = document.createElement('canvas');
-  off.width = w; off.height = h;
-  const img = off.getContext('2d').createImageData(w, h);
-  for (let i = 0, n = w*h; i < n; i++){
-    const v = bytes[i], o = i*4;
-    img.data[o] = img.data[o+1] = img.data[o+2] = v;
-    img.data[o+3] = 255;
-  }
-  off.getContext('2d').putImageData(img, 0, 0);
-
-  const S = 512;
-  cv.width = cv.height = S;
-  ctx.imageSmoothingEnabled = false;
-  ctx.fillStyle = '#0C0B09'; ctx.fillRect(0, 0, S, S);
-  const scale = Math.min(S/w, S/h);
-  const dw = Math.max(1, w*scale), dh = Math.max(1, h*scale);
-  ctx.drawImage(off, (S-dw)/2, (S-dh)/2, dw, dh);
-
-  const kb = bytes.length / 1024;
-  $('mName').textContent = name;
-  $('mName').title = name;
-  $('mSize').textContent = kb > 1024 ? (kb/1024).toFixed(2) + ' MB' : kb.toFixed(1) + ' KB';
-  $('mDim').textContent = w + ' × ' + h + ' px';
-  $('mEnt').textContent = entropy(bytes).toFixed(2) + ' / 8.00';
-}
-
-/* a synthetic binary so the panel is never empty on load */
-function sample(){
-  const n = 96 * 1024, b = new Uint8Array(n);
-  for (let i = 0; i < n; i++){
-    const z = i / n;
-    if (z < 0.04)      b[i] = (i % 16 < 4) ? 60 + (i % 7) * 12 : 12;        // header
-    else if (z < 0.46) b[i] = 96 + Math.sin(i / 3.1) * 34 + (i % 11) * 5;   // code
-    else if (z < 0.60) b[i] = 0;                                            // padding
-    else if (z < 0.80) b[i] = Math.random() * 255;                          // packed
-    else               b[i] = 150 + Math.sin(i / 260) * 60 + (i % 5) * 4;   // data
-  }
-  return b;
-}
-
-function readFile(f){
-  if (f.size > 12 * 1024 * 1024){ toast('Keep it under 12 MB'); return; }
-  const r = new FileReader();
-  r.onload = () => draw(new Uint8Array(r.result), f.name);
-  r.onerror = () => toast("Couldn't read that file");
-  r.readAsArrayBuffer(f);
-}
-
-const drop = $('drop'), fileIn = $('file');
-drop.addEventListener('click', () => fileIn.click());
-$('pickBtn').addEventListener('click', () => fileIn.click());
-drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fileIn.click(); }});
-fileIn.addEventListener('change', e => e.target.files[0] && readFile(e.target.files[0]));
-['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-drop.addEventListener('drop', e => e.dataTransfer.files[0] && readFile(e.dataTransfer.files[0]));
-draw(sample(), 'synthetic sample');
-
-/* ============================================================
    COMMAND PALETTE
    ============================================================ */
 const ACTIONS = [
   { t:'Download résumé',    k:'pdf',      needs:'resume',   run:() => { const a=document.createElement('a'); a.href=LINKS.resume; a.download=''; a.click(); } },
   { t:'Copy email address', k:'mail',     needs:'email',    run:copyMail },
-  { t:'Render a file',      k:'bytes',    run:() => { $('viz').scrollIntoView({block:'center'}); setTimeout(()=>fileIn.click(),400); } },
   { t:'Go to work',         k:'jump',     run:() => $('work').scrollIntoView() },
   { t:'Go to builds',       k:'jump',     run:() => $('builds').scrollIntoView() },
+  { t:'Go to education',    k:'jump',     run:() => $('education').scrollIntoView() },
   { t:'Go to contact',      k:'jump',     run:() => $('contact').scrollIntoView() },
   { t:'Open GitHub',        k:'external', needs:'github',   run:() => open(LINKS.github,'_blank','noopener') },
   { t:'Open LinkedIn',      k:'external', needs:'linkedin', run:() => open(LINKS.linkedin,'_blank','noopener') },
