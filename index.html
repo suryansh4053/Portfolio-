@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Suryansh Kumar — Backend, AI Systems, Security</title>
-<meta name="description" content="B.Tech CSE at VIT Bhopal, 2027. Two DRDO traineeships building offline RAG and OSINT systems, and a malware-family CNN scoring 0.939 macro-F1 behind a FastAPI endpoint.">
+<meta name="description" content="B.Tech CSE at VIT Bhopal, 2027. Two DRDO traineeships building offline RAG and OSINT investigation systems, plus a shipped malware-family classifier.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -185,30 +185,7 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
 .foot a:hover{color:var(--accent)}
 .footlinks{display:flex;gap:20px;flex-wrap:wrap}
 
-/* ---------- headline metrics ---------- */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
-  border:1px solid var(--line);border-radius:9px;overflow:hidden;margin:2px 0 18px}
-.metrics div{background:var(--panel2);padding:12px 13px}
-.metrics .m-v{font-family:var(--mono);font-weight:600;font-size:19px;line-height:1.15;
-  color:var(--ink);letter-spacing:-.02em}
-.metrics .m-v.hi{color:var(--accent)}
-.metrics .m-k{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--muted);margin-top:4px}
 .chip.done{color:var(--accent2);border-color:rgba(var(--accent2-rgb),.55)}
-
-/* ---------- results chart ---------- */
-.mchart{width:100%;height:auto;display:block}
-.mchart .track{fill:var(--panel3)}
-.mchart .ba{fill:var(--accent)}
-.mchart .bb{fill:var(--accent3)}
-.mchart .lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;fill:var(--muted)}
-.mchart .val{font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--ink)}
-.chartkey{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;
-  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:16px}
-.chartkey i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:7px;
-  vertical-align:middle}
-.chartnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.7;
-  margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}
 
 /* ---------- contact ---------- */
 .contact{align-items:center;text-align:center;gap:16px;
@@ -265,7 +242,6 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
   body{font-size:14.5px}
   .skills{grid-template-columns:1fr}
   .readout{grid-template-columns:1fr}
-  .metrics{grid-template-columns:repeat(2,1fr)}
   .toplinks .hide-sm{display:none}
   .cta .btn{flex:1;justify-content:center}
   .clinks .mailbtn{flex:1 1 100%;justify-content:center}
@@ -304,9 +280,8 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
         <p class="lede">
           Two traineeships at DRDO — an offline assistant that answers questions about your
           documents using models running on your own machine, and an OSINT platform that pulls
-          entities out of files for investigators. Most recently I trained a network that
-          recognises malware families from the shape of their bytes, and put it behind an API
-          that knows when to say it isn't sure.
+          entities out of files for investigators. Most recently, a network that recognises
+          malware families from the shape of their bytes.
         </p>
       </div>
       <div class="cta">
@@ -432,84 +407,40 @@ h1 em,.contact h2 em{font-style:normal;color:var(--accent);
     <section class="cell c5 rise">
       <div class="cell-head"><span class="label">Currently</span></div>
       <ul class="focus">
-        <li><b>Shipped</b><span>A 250K-parameter CNN sorting malware into 25 families from grayscale byte images — 0.939 validation macro-F1, served behind a FastAPI endpoint with PyTest and CI.</span></li>
-        <li><b>Learned</b><span>Accuracy flatters a 37× class imbalance. Macro-F1 and per-family recall, with inverse-square-root class weighting, are what made the rare families learnable.</span></li>
+        <li><b>Shipped</b><span>The malware classifier — trained, benchmarked, and serving behind an API with tests and CI.</span></li>
+        <li><b>Learned</b><span>Accuracy flatters imbalanced data. Macro-F1 and per-class recall are what made the rare cases learnable.</span></li>
         <li><b>Open to</b><span>SDE internships now, and new-grad roles from mid-2027.</span></li>
       </ul>
     </section>
 
     <!-- BUILDS -->
-    <section class="cell c7 rise" id="builds">
-      <div class="cell-head">
-        <span class="role-org">Malware Family Classifier<a class="srclink" href="https://github.com/suryansh4053/malware-classifier" target="_blank" rel="noopener">code ↗</a></span>
+    <section class="cell c6 build rise" id="builds">
+      <div class="build-top">
+        <h3>Malware Family Classifier<a class="srclink" href="https://github.com/suryansh4053/malware-classifier" target="_blank" rel="noopener">code ↗</a></h3>
         <span class="chip done">Shipped</span>
       </div>
-      <div class="metrics">
-        <div><div class="m-v hi">0.939</div><div class="m-k">Macro-F1</div></div>
-        <div><div class="m-v">25</div><div class="m-k">Families</div></div>
-        <div><div class="m-v">250K</div><div class="m-k">Parameters</div></div>
-        <div><div class="m-v">45×</div><div class="m-k">Smaller</div></div>
-      </div>
-      <p>Every file is a list of numbers, and so is every image — so a program can be drawn as a
-         picture, and malware from the same family looks alike. A CNN trained from scratch sorts
-         binaries into 25 families and comes within 0.046 macro-F1 of a fine-tuned ResNet-18 with
-         45× its parameters. The dataset is 37× imbalanced, 2,949 samples down to 80, so it is
-         scored on macro-F1 and per-family recall rather than accuracy, with inverse-square-root
-         class weighting to keep the rare families learnable. Withholding an entire family from
-         training exposed the closed-set assumption; max-softmax rejection lets the model decline
-         instead of guessing. It serves from a FastAPI endpoint with PyTest tests, a Docker image
-         and GitHub Actions CI.</p>
-      <div class="tags"><span class="tag">PyTorch</span><span class="tag">CNN</span><span class="tag">ResNet-18</span><span class="tag">FastAPI</span><span class="tag">Docker</span><span class="tag">PyTest</span><span class="tag">GitHub Actions</span></div>
+      <p>A CNN trained from scratch sorts binaries into 25 families by drawing each one as a
+         grayscale image. 0.939 validation macro-F1 — within 0.046 of a fine-tuned ResNet-18
+         carrying 45× the parameters. Serves from a FastAPI endpoint, and declines when it
+         isn't sure.</p>
+      <div class="stack">PyTorch · ResNet-18 · FastAPI · Docker · PyTest</div>
     </section>
 
-    <!-- RESULTS -->
-    <figure class="cell c5 rise">
-      <div class="cell-head"><span class="label">Scratch CNN vs fine-tuned baseline</span></div>
-      <svg class="mchart" viewBox="0 0 340 134" role="img"
-           aria-label="Validation macro-F1: scratch CNN 0.939, ResNet-18 0.985. Parameters: scratch CNN 250 thousand, ResNet-18 11.2 million.">
-        <text class="lbl" x="0" y="9">VALIDATION MACRO-F1</text>
-        <rect class="track" x="68" y="16" width="182" height="15" rx="3"/>
-        <rect class="ba" x="68" y="16" width="171" height="15" rx="3"/>
-        <text class="lbl" x="0" y="27">SCRATCH CNN</text>
-        <text class="val" x="258" y="27">0.939</text>
-        <rect class="track" x="68" y="37" width="182" height="15" rx="3"/>
-        <rect class="bb" x="68" y="37" width="179" height="15" rx="3"/>
-        <text class="lbl" x="0" y="48">RESNET-18</text>
-        <text class="val" x="258" y="48">0.985</text>
-
-        <text class="lbl" x="0" y="80">PARAMETERS</text>
-        <rect class="track" x="68" y="87" width="182" height="15" rx="3"/>
-        <rect class="ba" x="68" y="87" width="4" height="15" rx="2"/>
-        <text class="lbl" x="0" y="98">SCRATCH CNN</text>
-        <text class="val" x="258" y="98">250K</text>
-        <rect class="track" x="68" y="108" width="182" height="15" rx="3"/>
-        <rect class="bb" x="68" y="108" width="182" height="15" rx="3"/>
-        <text class="lbl" x="0" y="119">RESNET-18</text>
-        <text class="val" x="258" y="119">11.2M</text>
-      </svg>
-      <div class="chartkey">
-        <span><i style="background:var(--accent)"></i>Scratch CNN</span>
-        <span><i style="background:var(--accent3)"></i>ResNet-18</span>
-      </div>
-      <p class="chartnote">Both bars are drawn from zero. The scratch model gives up 0.046 macro-F1
-         to a network 45× its size.</p>
-    </figure>
-
-    <section class="cell c4 build rise">
+    <section class="cell c6 build rise">
       <div class="build-top"><h3>Mind Connect</h3><span class="chip">Shipped</span></div>
       <p>An anonymous mental-health support board with community discussion. JWT session
          authentication and bcrypt password hashing at 10 rounds sit behind a stateless REST API.</p>
       <div class="stack">React · Node.js · Express · JWT</div>
     </section>
 
-    <section class="cell c4 build rise">
+    <section class="cell c6 build rise">
       <div class="build-top"><h3>Medication Recommender</h3><span class="chip">Shipped</span></div>
       <p>Maps symptoms to medications across 3,000+ records. Decision Tree, SVM and KNN compared
          under 5-fold cross-validation, with the best model reaching ~89% held-out accuracy.</p>
       <div class="stack">Python · scikit-learn · Pandas · NumPy</div>
     </section>
 
-    <section class="cell c4 build rise">
+    <section class="cell c6 build rise">
       <div class="build-top"><h3>Ultrasonic Change Detection</h3><span class="chip">Shipped</span></div>
       <p>An Arduino radar sweeping 180° with HC-SR04 sensors, accurate to within ±3 cm. FFT and
          low-pass filtering clean the returns before anything gets reported as a change.</p>
